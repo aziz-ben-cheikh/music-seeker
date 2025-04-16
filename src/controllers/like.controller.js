@@ -1,5 +1,5 @@
 import likeService from "../services/like.service.js";
-import { NotFoundError, ForbiddenError, UnauthorizedError } from '../errors.js'; // Import error classes
+import { NotFoundError, ForbiddenError, UnauthorizedError } from '../errors.js'; 
 
 class likeController {
 

@@ -1,5 +1,5 @@
 import genreService from "../services/genre.service.js";
-import { NotFoundError, ForbiddenError, UnauthorizedError } from '../errors.js'; // Import error classes
+import { NotFoundError, ForbiddenError, UnauthorizedError } from '../errors.js'; 
 
 class genreController {
 

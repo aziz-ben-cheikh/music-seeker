@@ -1,4 +1,4 @@
-import { NotFoundError, ForbiddenError, UnauthorizedError } from '../errors.js'; // Import error classes
+import { NotFoundError, ForbiddenError, UnauthorizedError } from '../errors.js'; 
 import followRepository from "../repositories/follow.repository.js";
 
 class followService {

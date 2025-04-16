@@ -1,23 +1,22 @@
 // db.js
-import sqlite3 from "sqlite3"
-sqlite3.verbose()
+import mysql from 'mysql2/promise';
 
-// Create a new SQLite database or open an existing one
-const db = new sqlite3.Database('./Chinook.db', (err) => {
-  if (err) {
-    console.error('Error opening database:', err.message);
-  } else {
-    console.log('Connected to SQLite database.');
-  }
+// Create a connection pool (adjust with your own credentials)
+const pool = mysql.createPool({
+  host: 'localhost',
+  user: 'root',
+  password: '12345',
+  database: 'my_database',
 });
 
 // Test the connection by running a simple query
-db.get('SELECT 1', [], (err, row) => {
-  if (err) {
-    console.error('Error testing connection:', err.message);
-  } else {
-    console.log('Database connection is working:', row); // Should log { '1': 1 }
-  }
-});
+try {
+  const connection = await pool.getConnection();
+  const [rows] = await connection.query('SELECT 1');
+  console.log('Database connection is working:', rows); // Should log [ { '1': 1 } ]
+  connection.release();
+} catch (err) {
+  console.error('Error connecting to MySQL database:', err.message);
+}
 
-export default db;
+export default pool;

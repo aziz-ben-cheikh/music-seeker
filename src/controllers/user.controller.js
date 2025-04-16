@@ -1,5 +1,5 @@
 import userService from "../services/user.service.js";
-import { NotFoundError, ForbiddenError, UnauthorizedError } from '../errors.js'; // Import error classes
+import { NotFoundError, ForbiddenError, UnauthorizedError } from '../errors.js'; 
 
 class userController {
 

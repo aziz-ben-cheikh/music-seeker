@@ -1,5 +1,5 @@
 import playlist_likeService from '../services/playlist_like.service.js';
-import { NotFoundError, ForbiddenError, UnauthorizedError } from '../errors.js'; // Import error classes
+import { NotFoundError, ForbiddenError, UnauthorizedError } from '../errors.js'; 
 
 class playlist_likeController {
 

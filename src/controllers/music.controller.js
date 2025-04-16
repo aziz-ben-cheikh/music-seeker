@@ -1,5 +1,5 @@
 import musicService from '../services/music.service.js';
-import { NotFoundError, ForbiddenError, UnauthorizedError } from '../errors.js'; // Import error classes
+import { NotFoundError, ForbiddenError, UnauthorizedError } from '../errors.js'; 
 
 class musicController {
 

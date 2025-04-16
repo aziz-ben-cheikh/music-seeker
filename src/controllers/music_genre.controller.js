@@ -1,5 +1,5 @@
 import music_genreService from "../services/music_genre.service.js";
-import { NotFoundError, ForbiddenError, UnauthorizedError } from '../errors.js'; // Import error classes
+import { NotFoundError, ForbiddenError, UnauthorizedError } from '../errors.js'; 
 
 class music_genreController {
 

@@ -2,7 +2,7 @@ import fs from "fs-extra/esm";
 import path from "path";
 import { fileURLToPath } from "url";
 
-// Fix for __dirname in ES Modules
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -31,7 +31,9 @@ class playlist_musicRepository {
     }
 
     async findAll() {
-        return await this.readData();
+        const sql = 'select * from users';
+        const  [result] = await db.execute(sql);
+        return result;
     }
 
     async findById(id) {
