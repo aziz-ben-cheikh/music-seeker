@@ -22,6 +22,6 @@ app.use("/api/music_genre", music_genreRoutes)
 app.use("/api/playlist_like", playlist_likeRoutes)
 app.use("/api/playlist_music", playlist_musicRoutes)
 app.use("/api/playlist", playlistRoutes)
-app.use("/api/user", userRoutes)
+app.use("/api/users", userRoutes)
 
 export default app;

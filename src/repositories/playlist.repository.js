@@ -1,6 +1,7 @@
 import fs from "fs-extra/esm";
 import path from "path";
 import { fileURLToPath } from "url";
+import db from "../../DataBase.js";
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -23,22 +24,26 @@ class playlistRepository {
     }
 
     async create(newplaylist) {
-        const playlists = await this.readData();
-        newplaylist.id = Date.now().toString();
-        playlists.push(newplaylist);
-        await this.writeData(playlists);
-        return newplaylist;
+        const sql=`insert into playlists (user_id,name)
+        values (?,?)`;
+        const values=[
+        newplaylist.user_id,
+        newplaylist.name,];
+
+        const [result] = await db.execute(sql, values);
+        return { id: result.insertId, ...newplaylist };
     }
 
     async findAll() {
-        const sql = 'select * from users';
+        const sql = 'select * from playlists';
         const  [result] = await db.execute(sql);
         return result;
     }
 
-    async findById(id) {
-        const playlists = await this.readData();
-        return playlists.find(playlist => playlist.id === id);
+    async findByid(id) {
+        const sql = 'SELECT * FROM playlists WHERE id = ?';
+        const [rows] = await db.execute(sql, [id]);
+        return rows[0] || null;
     }
 
     async update(id, playlistData) {

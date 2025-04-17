@@ -24,11 +24,23 @@ class userRepository {
     }
 
     async create(newuser) {
-        const users = await this.readData();
-        newuser.id = Date.now().toString();
-        users.push(newuser);
-        await this.writeData(users);
-        return newuser;
+        const sql = `
+            INSERT INTO users (username, first_name, last_name, email, password_hash, bio, profile_pic_url)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        `;
+
+        const values = [
+            newuser.username,
+            newuser.first_name,
+            newuser.last_name,
+            newuser.email,
+            newuser.password_hash,
+            newuser.bio || null,
+            newuser.profile_pic_url || null,
+        ];
+
+        const [result] = await db.execute(sql, values);
+        return { id: result.insertId, ...newuser };
     }
 
     async findAll() {
@@ -37,9 +49,10 @@ class userRepository {
         return result;
     }
 
-    async findById(id) {
-        const users = await this.readData();
-        return users.find(user => user.id === id);
+    async findByid(id) {
+        const sql = 'SELECT * FROM users WHERE id = ?';
+        const [rows] = await db.execute(sql, [id]);
+        return rows[0] || null;
     }
 
     async update(id, userData) {

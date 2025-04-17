@@ -20,7 +20,7 @@ class playlist_likeService {
     }
 
     async getplaylist_likebyid(id) {
-        const playlist_like = await playlist_likeRepository.findbyid(id);
+        const playlist_like = await playlist_likeRepository.findByid(id);
         if (!playlist_like) {
             throw new NotFoundError(`playlist_like with ID ${id} not found.`);
         }

@@ -1,6 +1,7 @@
 import fs from "fs-extra/esm";
 import path from "path";
 import { fileURLToPath } from "url";
+import db from "../../DataBase.js";
 
 
 
@@ -24,22 +25,26 @@ class FollowRepository {
     }
 
     async create(newFollow) {
-        const follows = await this.readData();
-        newFollow.id = Date.now().toString();
-        follows.push(newFollow);
-        await this.writeData(follows);
-        return newFollow;
+        const sql=`insert into follows (follower_id,following_id)
+        values (?,?)`;
+        const values=[
+            newFollow.follower_id,
+            newFollow.following_id,
+        ];
+        const [result] = await db.execute(sql, values);
+        return { id: result.insertId, ...newFollow };
     }
 
     async findAll() {
-        const sql = 'select * from users';
+        const sql = 'select * from follows';
         const  [result] = await db.execute(sql);
         return result;
     }
 
-    async findById(id) {
-        const follows = await this.readData();
-        return follows.find(follow => follow.id === id);
+    async findByid(id) {
+        const sql = 'SELECT * FROM follows WHERE id = ?';
+        const [rows] = await db.execute(sql, [id]);
+        return rows[0] || null;
     }
 
     async update(id, followData) {

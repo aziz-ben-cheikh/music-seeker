@@ -20,7 +20,7 @@ class genreService {
     }
 
     async getgenrebyid(id) {
-        const genre = await genreRepository.findbyid(id);
+        const genre = await genreRepository.findByid(id);
         if (!genre) {
             throw new NotFoundError(`genre with ID ${id} not found.`);
         }

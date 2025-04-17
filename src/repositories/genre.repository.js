@@ -1,6 +1,7 @@
 import fs from "fs-extra/esm";
 import path from "path";
 import { fileURLToPath } from "url";
+import db from "../../DataBase.js";
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -23,22 +24,25 @@ class genreRepository {
     }
 
     async create(newgenre) {
-        const genres = await this.readData();
-        newgenre.id = Date.now().toString();
-        genres.push(newgenre);
-        await this.writeData(genres);
-        return newgenre;
+        const sql = `insert into genre (name)
+        VALUES (?)`;
+        const VALUES=[newgenre.name,];
+        const [result] = await db.execute(sql, VALUES);
+        return { id: result.insertId, ...newgenre };
+
+
     }
 
     async findAll() {
-        const sql = 'select * from users';
+        const sql = 'select * from genre';
         const  [result] = await db.execute(sql);
         return result;
     }
 
-    async findById(id) {
-        const genres = await this.readData();
-        return genres.find(genre => genre.id === id);
+    async findByid(id) {
+        const sql = 'SELECT * FROM genre WHERE id = ?';
+        const [rows] = await db.execute(sql, [id]);
+        return rows[0] || null;
     }
 
     async update(id, genreData) {

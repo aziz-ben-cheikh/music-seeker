@@ -20,7 +20,7 @@ class music_genreService {
     }
 
     async getmusic_genrebyid(id) {
-        const music_genre = await music_genreRepository.findbyid(id);
+        const music_genre = await music_genreRepository.findByid(id);
         if (!music_genre) {
             throw new NotFoundError(`music_genre with ID ${id} not found.`);
         }

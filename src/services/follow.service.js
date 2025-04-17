@@ -20,7 +20,7 @@ class followService {
     }
 
     async getfollowbyid(id) {
-        const follow = await followRepository.findById(id);
+        const follow = await followRepository.findByid(id);
         if (!follow) {
             throw new NotFoundError(`follow with ID ${id} not found.`);
         }

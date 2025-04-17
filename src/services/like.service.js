@@ -20,7 +20,7 @@ class likeService {
     }
 
     async getlikebyid(id) {
-        const like = await likeRepository.findbyid(id);
+        const like = await likeRepository.findByid(id);
         if (!like) {
             throw new NotFoundError(`like with ID ${id} not found.`);
         }

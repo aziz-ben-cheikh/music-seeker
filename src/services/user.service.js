@@ -20,7 +20,7 @@ class userService {
     }
 
     async getuserbyid(id) {
-        const user = await userRepository.findbyid(id);
+        const user = await userRepository.findByid(id);
         if (!user) {
             throw new NotFoundError(`User with ID ${id} not found.`);
         }

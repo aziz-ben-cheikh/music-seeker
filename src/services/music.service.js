@@ -20,7 +20,7 @@ class musicService {
     }
 
     async getmusicbyid(id) {
-        const music = await musicRepository.findbyid(id);
+        const music = await musicRepository.findByid(id);
         if (!music) {
             throw new NotFoundError(`music with ID ${id} not found.`);
         }

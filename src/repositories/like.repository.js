@@ -1,6 +1,7 @@
 import fs from "fs-extra/esm";
 import path from "path";
 import { fileURLToPath } from "url";
+import db from "../../DataBase.js";
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -23,22 +24,26 @@ class likeRepository {
     }
 
     async create(newlike) {
-        const likes = await this.readData();
-        newlike.id = Date.now().toString();
-        likes.push(newlike);
-        await this.writeData(likes);
-        return newlike;
+        const sql=`insert into likes (user_id,music_id)
+        values (?,?)`
+        const values=[
+            newlike.user_id,
+            newlike.music_id,
+        ];
+        const [result] = await db.execute(sql, values);
+        return { id: result.insertId, ...newlike };
     }
 
     async findAll() {
-        const sql = 'select * from users';
+        const sql = 'select * from likes';
         const  [result] = await db.execute(sql);
         return result;
     }
 
-    async findById(id) {
-        const likes = await this.readData();
-        return likes.find(like => like.id === id);
+    async findByid(id) {
+        const sql = 'SELECT * FROM likes WHERE id = ?';
+        const [rows] = await db.execute(sql, [id]);
+        return rows[0] || null;
     }
 
     async update(id, likeData) {

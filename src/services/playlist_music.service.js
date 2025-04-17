@@ -20,7 +20,7 @@ class playlist_musicService {
     }
 
     async getplaylist_musicbyid(id) {
-        const playlist_music = await playlist_musicRepository.findbyid(id);
+        const playlist_music = await playlist_musicRepository.findByid(id);
         if (!playlist_music) {
             throw new NotFoundError(`playlist_music with ID ${id} not found.`);
         }
