@@ -47,13 +47,19 @@ class likeRepository {
     }
 
     async update(id, likeData) {
-        let likes = await this.readData();
-        const index = likes.findIndex(like => like.id === id);
-        if (index === -1) return null;
+        const fields = Object.keys(likeData);
+        if (fields.length === 0) return null;
 
-        likes[index] = { ...likes[index], ...likeData };
-        await this.writeData(likes);
-        return likes[index];
+        const setClause = fields.map(field => `${field} = ?`).join(', ');
+        const values = Object.values(likeData);
+        const sql = `UPDATE likes SET ${setClause} WHERE id = ?`;
+        values.push(id);
+
+        const [result] = await db.execute(sql, values);
+        if (result.affectedRows === 0) return null;
+
+        const [updatedUserRows] = await db.execute('SELECT * FROM likes WHERE id = ?', [id]);
+        return updatedUserRows[0];
     }
 
     async delete(id) {

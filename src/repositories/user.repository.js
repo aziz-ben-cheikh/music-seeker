@@ -55,14 +55,26 @@ class userRepository {
         return rows[0] || null;
     }
 
-    async update(id, userData) {
-        let users = await this.readData();
-        const index = users.findIndex(user => user.id === id);
-        if (index === -1) return null;
+    async findByEmail(email) {
+        const sql = 'SELECT * FROM users WHERE email = ?';
+        const [rows] = await db.execute(sql, [email]);
+        return rows[0] || null;
+    }
 
-        users[index] = { ...users[index], ...userData };
-        await this.writeData(users);
-        return users[index];
+    async update(id, userData) {
+        const fields = Object.keys(userData);
+        if (fields.length === 0) return null;
+
+        const setClause = fields.map(field => `${field} = ?`).join(', ');
+        const values = Object.values(userData);
+        const sql = `UPDATE users SET ${setClause} WHERE id = ?`;
+        values.push(id);
+
+        const [result] = await db.execute(sql, values);
+        if (result.affectedRows === 0) return null;
+
+        const [updatedUserRows] = await db.execute('SELECT * FROM users WHERE id = ?', [id]);
+        return updatedUserRows[0];
     }
 
     async delete(id) {

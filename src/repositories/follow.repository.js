@@ -48,13 +48,19 @@ class FollowRepository {
     }
 
     async update(id, followData) {
-        let follows = await this.readData();
-        const index = follows.findIndex(follow => follow.id === id);
-        if (index === -1) return null;
+        const fields = Object.keys(followData);
+        if (fields.length === 0) return null;
 
-        follows[index] = { ...follows[index], ...followData };
-        await this.writeData(follows);
-        return follows[index];
+        const setClause = fields.map(field => `${field} = ?`).join(', ');
+        const values = Object.values(followData);
+        const sql = `UPDATE follows SET ${setClause} WHERE id = ?`;
+        values.push(id);
+
+        const [result] = await db.execute(sql, values);
+        if (result.affectedRows === 0) return null;
+
+        const [updatedUserRows] = await db.execute('SELECT * FROM follows WHERE id = ?', [id]);
+        return updatedUserRows[0];
     }
 
     async delete(id) {

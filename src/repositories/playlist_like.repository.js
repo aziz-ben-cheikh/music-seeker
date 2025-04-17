@@ -47,13 +47,19 @@ class playlist_likeRepository {
     }
 
     async update(id, playlist_likeData) {
-        let playlist_likes = await this.readData();
-        const index = playlist_likes.findIndex(playlist_like => playlist_like.id === id);
-        if (index === -1) return null;
+        const fields = Object.keys(playlist_likeData);
+        if (fields.length === 0) return null;
 
-        playlist_likes[index] = { ...playlist_likes[index], ...playlist_likeData };
-        await this.writeData(playlist_likes);
-        return playlist_likes[index];
+        const setClause = fields.map(field => `${field} = ?`).join(', ');
+        const values = Object.values(playlist_likeData);
+        const sql = `UPDATE playlist_likes SET ${setClause} WHERE id = ?`;
+        values.push(id);
+
+        const [result] = await db.execute(sql, values);
+        if (result.affectedRows === 0) return null;
+
+        const [updatedUserRows] = await db.execute('SELECT * FROM playlist_likes WHERE id = ?', [id]);
+        return updatedUserRows[0];
     }
 
     async delete(id) {

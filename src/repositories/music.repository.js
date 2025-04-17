@@ -50,13 +50,19 @@ class musicRepository {
     }
 
     async update(id, musicData) {
-        let musics = await this.readData();
-        const index = musics.findIndex(music => music.id === id);
-        if (index === -1) return null;
+        const fields = Object.keys(musicData);
+        if (fields.length === 0) return null;
 
-        musics[index] = { ...musics[index], ...musicData };
-        await this.writeData(musics);
-        return musics[index];
+        const setClause = fields.map(field => `${field} = ?`).join(', ');
+        const values = Object.values(musicData);
+        const sql = `UPDATE music SET ${setClause} WHERE id = ?`;
+        values.push(id);
+
+        const [result] = await db.execute(sql, values);
+        if (result.affectedRows === 0) return null;
+
+        const [updatedUserRows] = await db.execute('SELECT * FROM music WHERE id = ?', [id]);
+        return updatedUserRows[0];
     }
 
     async delete(id) {

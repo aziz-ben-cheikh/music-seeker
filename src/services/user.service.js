@@ -28,11 +28,6 @@ class userService {
     }
 
     async updateuser(id, userData) {
-        // Example of checking for unauthorized access (you can modify based on your authentication logic)
-        if (!userData.isAuthorized) {
-            throw new UnauthorizedError("You are not authorized to update this user.");
-        }
-
         const updatedUser = await userRepository.update(id, userData);
         if (!updatedUser) {
             throw new NotFoundError(`User with ID ${id} not found.`);
