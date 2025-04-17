@@ -66,12 +66,9 @@ class userRepository {
     }
 
     async delete(id) {
-        let users = await this.readData();
-        const newusers = users.filter(user => user.id !== id);
-        if (newusers.length === users.length) return null;
-
-        await this.writeData(newusers);
-        return true;
+        const sql = 'DELETE FROM users WHERE id = ?';
+        const [result] = await db.execute(sql, [id]);
+        return result.affectedRows > 0;
     }
 }
 

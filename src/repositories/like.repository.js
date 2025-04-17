@@ -57,12 +57,10 @@ class likeRepository {
     }
 
     async delete(id) {
-        let likes = await this.readData();
-        const newlikes = likes.filter(like => like.id !== id);
-        if (newlikes.length === likes.length) return null;
+        const sql = 'DELETE FROM likes WHERE id = ?';
+        const [result] = await db.execute(sql, [id]);
+        return result.affectedRows > 0;
 
-        await this.writeData(newlikes);
-        return true;
     }
 }
 

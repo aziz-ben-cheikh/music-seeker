@@ -58,12 +58,10 @@ class playlist_musicRepository {
     }
 
     async delete(id) {
-        let playlist_musics = await this.readData();
-        const newplaylist_musics = playlist_musics.filter(playlist_music => playlist_music.id !== id);
-        if (newplaylist_musics.length === playlist_musics.length) return null;
+        const sql = 'DELETE FROM playlist_music WHERE id = ?';
+        const [result] = await db.execute(sql, [id]);
+        return result.affectedRows > 0;
 
-        await this.writeData(newplaylist_musics);
-        return true;
     }
 }
 

@@ -58,12 +58,10 @@ class music_genreRepository {
     }
 
     async delete(id) {
-        let music_genres = await this.readData();
-        const newmusic_genres = music_genres.filter(music_genre => music_genre.id !== id);
-        if (newmusic_genres.length === music_genres.length) return null;
+        const sql = 'DELETE FROM music_genre WHERE id = ?';
+        const [result] = await db.execute(sql, [id]);
+        return result.affectedRows > 0;
 
-        await this.writeData(newmusic_genres);
-        return true;
     }
 }
 

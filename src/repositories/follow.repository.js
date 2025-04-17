@@ -58,12 +58,10 @@ class FollowRepository {
     }
 
     async delete(id) {
-        let follows = await this.readData();
-        const newFollows = follows.filter(follow => follow.id !== id);
-        if (newFollows.length === follows.length) return null;
+        const sql = 'DELETE FROM follows WHERE id = ?';
+        const [result] = await db.execute(sql, [id]);
+        return result.affectedRows > 0;
 
-        await this.writeData(newFollows);
-        return true;
     }
 }
 

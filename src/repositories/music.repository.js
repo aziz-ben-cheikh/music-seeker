@@ -60,12 +60,10 @@ class musicRepository {
     }
 
     async delete(id) {
-        let musics = await this.readData();
-        const newmusics = musics.filter(music => music.id !== id);
-        if (newmusics.length === musics.length) return null;
+        const sql = 'DELETE FROM music WHERE id = ?';
+        const [result] = await db.execute(sql, [id]);
+        return result.affectedRows > 0;
 
-        await this.writeData(newmusics);
-        return true;
     }
 }
 

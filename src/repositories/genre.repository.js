@@ -56,12 +56,10 @@ class genreRepository {
     }
 
     async delete(id) {
-        let genres = await this.readData();
-        const newgenres = genres.filter(genre => genre.id !== id);
-        if (newgenres.length === genres.length) return null;
+        const sql = 'DELETE FROM genre WHERE id = ?';
+        const [result] = await db.execute(sql, [id]);
+        return result.affectedRows > 0;
 
-        await this.writeData(newgenres);
-        return true;
     }
 }
 
