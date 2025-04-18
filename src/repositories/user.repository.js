@@ -38,6 +38,7 @@ class userRepository {
             newuser.bio || null,
             newuser.profile_pic_url || null,
         ];
+        console.log(newuser.username)
 
         const [result] = await db.execute(sql, values);
         return { id: result.insertId, ...newuser };

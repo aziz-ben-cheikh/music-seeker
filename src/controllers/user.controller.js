@@ -1,7 +1,24 @@
 import userService from "../services/user.service.js";
 import { NotFoundError, ForbiddenError, UnauthorizedError } from '../errors.js'; 
 
+
 class userController {
+
+    async login(req, res) {
+        try {
+            const { email, password } = req.body;
+            console.log(email,password)
+            const result = await userService.login(email, password);
+            res.json(result);
+        } catch (error) {
+            if (error instanceof UnauthorizedError) {
+                res.status(401).json({ error: error.message });
+            } else {
+                res.status(500).json(`${error}`);
+            }
+        }
+    }
+    
 
     async createuser(req, res) {
         try {

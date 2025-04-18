@@ -1,14 +1,42 @@
 import { NotFoundError, ForbiddenError, UnauthorizedError } from '../errors.js'; 
 import userRepository from "../repositories/user.repository.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 class userService {
     async createuser(userData) {
         try {
-            // Check for any validation or authentication logic here (if needed)
-            return await userRepository.create(userData);
+            const hashedPassword = await bcrypt.hash(userData.password, 10);
+            const newUser = {
+                ...userData,
+                password_hash: hashedPassword,
+            };
+            return await userRepository.create(newUser);
         } catch (error) {
             throw new Error('Error creating user');
         }
+    }
+
+    async login(email, password) {
+        const user = await userRepository.findByEmail(email);
+        if (!user) {
+            throw new UnauthorizedError("Invalid email or password");
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+        if (!isPasswordValid) {
+            throw new UnauthorizedError("Invalid email or password");
+        }
+        
+        const JWT_SECRET='12345'
+
+        const token = jwt.sign(
+            { userId: user.id, email: user.email },
+            JWT_SECRET,
+            { expiresIn: "1h" }
+        );
+
+        return { token, user: { id: user.id, username: user.username, email: user.email } };
     }
 
     async getalluser() {
