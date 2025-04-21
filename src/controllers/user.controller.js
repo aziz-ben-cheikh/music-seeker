@@ -14,7 +14,7 @@ class userController {
             if (error instanceof UnauthorizedError) {
                 res.status(401).json({ error: error.message });
             } else {
-                res.status(500).json(`${error}`);
+                res.status(500).json({error:"login failed"});
             }
         }
     }

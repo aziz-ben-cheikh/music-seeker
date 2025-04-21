@@ -25,8 +25,8 @@ class userRepository {
 
     async create(newuser) {
         const sql = `
-            INSERT INTO users (username, first_name, last_name, email, password_hash, bio, profile_pic_url)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO users (username, first_name, last_name, email, password_hash, roles, bio, profile_pic_url)
+            VALUES (?, ?, ?, ?, ?, ?, ?,?)
         `;
 
         const values = [
@@ -35,10 +35,10 @@ class userRepository {
             newuser.last_name,
             newuser.email,
             newuser.password_hash,
+            newuser.roles,
             newuser.bio || null,
             newuser.profile_pic_url || null,
         ];
-        console.log(newuser.username)
 
         const [result] = await db.execute(sql, values);
         return { id: result.insertId, ...newuser };

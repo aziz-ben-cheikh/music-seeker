@@ -13,7 +13,7 @@ class userService {
             };
             return await userRepository.create(newUser);
         } catch (error) {
-            throw new Error('Error creating user');
+            throw new Error("error creating user");
         }
     }
 
@@ -28,17 +28,17 @@ class userService {
             throw new UnauthorizedError("Invalid email or password");
         }
         
-        const JWT_SECRET='12345'
+        const JWT_SECRET='your_jwt_secret'
 
         const token = jwt.sign(
-            { userId: user.id, email: user.email },
+            { userId: user.id, email: user.email, roles:user.roles},
             JWT_SECRET,
             { expiresIn: "1h" }
         );
 
-        return { token, user: { id: user.id, username: user.username, email: user.email } };
+        return { token, user: { id: user.id, username: user.username, email: user.email,roles: user.roles } };
     }
-
+    
     async getalluser() {
         const users = await userRepository.findAll();
         if (!users || users.length === 0) {
