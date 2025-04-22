@@ -42,7 +42,7 @@ class FollowRepository {
     }
 
     async findByid(id) {
-        const sql = 'SELECT * FROM follows WHERE id = ?';
+        const sql = 'SELECT * FROM follows WHERE follower_id = ?';
         const [rows] = await db.execute(sql, [id]);
         return rows[0] || null;
     }

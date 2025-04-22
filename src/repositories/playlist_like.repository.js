@@ -41,7 +41,7 @@ class playlist_likeRepository {
     }
 
     async findByid(id) {
-        const sql = 'SELECT * FROM playlist_likes WHERE id = ?';
+        const sql = 'SELECT * FROM playlist_likes WHERE user_id = ?';
         const [rows] = await db.execute(sql, [id]);
         return rows[0] || null;
     }

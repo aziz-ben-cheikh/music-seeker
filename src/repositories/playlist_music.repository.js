@@ -42,7 +42,7 @@ class playlist_musicRepository {
     }
 
     async findByid(id) {
-        const sql = 'SELECT * FROM playlist_music WHERE id = ?';
+        const sql = 'SELECT * FROM playlist_music WHERE playlist_id = ?';
         const [rows] = await db.execute(sql, [id]);
         return rows[0] || null;
     }

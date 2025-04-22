@@ -42,7 +42,7 @@ class music_genreRepository {
     }
 
     async findByid(id) {
-        const sql = 'SELECT * FROM music_genre WHERE id = ?';
+        const sql = 'SELECT * FROM music_genre WHERE music_id = ?';
         const [rows] = await db.execute(sql, [id]);
         return rows[0] || null;
     }
