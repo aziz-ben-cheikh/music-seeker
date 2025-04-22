@@ -52,18 +52,18 @@ class likeRepository {
 
         const setClause = fields.map(field => `${field} = ?`).join(', ');
         const values = Object.values(likeData);
-        const sql = `UPDATE likes SET ${setClause} WHERE id = ?`;
+        const sql = `UPDATE likes SET ${setClause} WHERE user_id = ?`;
         values.push(id);
 
         const [result] = await db.execute(sql, values);
         if (result.affectedRows === 0) return null;
 
-        const [updatedUserRows] = await db.execute('SELECT * FROM likes WHERE id = ?', [id]);
+        const [updatedUserRows] = await db.execute('SELECT * FROM likes WHERE user_id = ?', [id]);
         return updatedUserRows[0];
     }
 
     async delete(id) {
-        const sql = 'DELETE FROM likes WHERE id = ?';
+        const sql = 'DELETE FROM likes WHERE user_id = ?';
         const [result] = await db.execute(sql, [id]);
         return result.affectedRows > 0;
 

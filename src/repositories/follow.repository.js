@@ -53,18 +53,18 @@ class FollowRepository {
 
         const setClause = fields.map(field => `${field} = ?`).join(', ');
         const values = Object.values(followData);
-        const sql = `UPDATE follows SET ${setClause} WHERE id = ?`;
+        const sql = `UPDATE follows SET ${setClause} WHERE follower_id = ?`;
         values.push(id);
 
         const [result] = await db.execute(sql, values);
         if (result.affectedRows === 0) return null;
 
-        const [updatedUserRows] = await db.execute('SELECT * FROM follows WHERE id = ?', [id]);
+        const [updatedUserRows] = await db.execute('SELECT * FROM follows WHERE follower_id = ?', [id]);
         return updatedUserRows[0];
     }
 
     async delete(id) {
-        const sql = 'DELETE FROM follows WHERE id = ?';
+        const sql = 'DELETE FROM follows WHERE follower_id = ?';
         const [result] = await db.execute(sql, [id]);
         return result.affectedRows > 0;
 

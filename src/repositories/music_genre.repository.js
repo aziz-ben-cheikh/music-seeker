@@ -53,18 +53,18 @@ class music_genreRepository {
 
         const setClause = fields.map(field => `${field} = ?`).join(', ');
         const values = Object.values(music_genreData);
-        const sql = `UPDATE music_genre SET ${setClause} WHERE id = ?`;
+        const sql = `UPDATE music_genre SET ${setClause} WHERE music_id = ?`;
         values.push(id);
 
         const [result] = await db.execute(sql, values);
         if (result.affectedRows === 0) return null;
 
-        const [updatedUserRows] = await db.execute('SELECT * FROM music_genre WHERE id = ?', [id]);
+        const [updatedUserRows] = await db.execute('SELECT * FROM music_genre WHERE music_id = ?', [id]);
         return updatedUserRows[0];
     }
 
     async delete(id) {
-        const sql = 'DELETE FROM music_genre WHERE id = ?';
+        const sql = 'DELETE FROM music_genre WHERE music_id = ?';
         const [result] = await db.execute(sql, [id]);
         return result.affectedRows > 0;
 

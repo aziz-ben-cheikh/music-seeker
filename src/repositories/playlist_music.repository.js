@@ -53,19 +53,19 @@ class playlist_musicRepository {
 
         const setClause = fields.map(field => `${field} = ?`).join(', ');
         const values = Object.values(playlist_musicData);
-        const sql = `UPDATE playlist_music SET ${setClause} WHERE id = ?`;
+        const sql = `UPDATE playlist_music SET ${setClause} WHERE playlist_id = ?`;
         values.push(id);
 
         const [result] = await db.execute(sql, values);
         if (result.affectedRows === 0) return null;
 
-        const [updatedUserRows] = await db.execute('SELECT * FROM playlist_music WHERE id = ?', [id]);
+        const [updatedUserRows] = await db.execute('SELECT * FROM playlist_music WHERE playlist_id = ?', [id]);
         return updatedUserRows[0];
     
     }
 
     async delete(id) {
-        const sql = 'DELETE FROM playlist_music WHERE id = ?';
+        const sql = 'DELETE FROM playlist_music WHERE playlist_id = ?';
         const [result] = await db.execute(sql, [id]);
         return result.affectedRows > 0;
 
