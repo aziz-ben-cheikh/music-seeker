@@ -1,3 +1,4 @@
+import { rolePermissions } from "./roles.js";
 import jwt from "jsonwebtoken";
 const JWT_SECRET = "your_jwt_secret";
 
@@ -24,18 +25,17 @@ export function authenticateToken(req, res, next) {
     });
 }
 
-export function authorizeRoles(...allowedRoles) {
+export function authorizePermission(requiredPermission) {
     return (req, res, next) => {
+        const userRole = req.user.roles;
+        const permissions = rolePermissions[userRole] || [];
 
-        console.log("Allowed Roles:", allowedRoles);
-        console.log("User Roles:", req.user.roles);
-        if (!req.user) return res.sendStatus(401);
-
-        if (!allowedRoles.includes(req.user.roles)) {
-            return res.status(403).json({ message: "Forbidden: insufficient role" });
+        if (!permissions.includes(requiredPermission)) {
+            return res.status(403).json({ message: "Forbidden: insufficient permission" });
         }
 
         next();
     };
 }
+
 

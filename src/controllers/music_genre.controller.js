@@ -8,7 +8,7 @@ class music_genreController {
             const music_genre = await music_genreService.createmusic_genre(req.body);
             res.status(201).json(music_genre);
         } catch (error) {
-            if (error instanceof UnauthorizedError) {
+            if (error.name === 'appError' && error.statuscode === 401) {
                 res.status(401).json({ error: error.message });
             } else {
                 res.status(400).json({ error: error.message });
@@ -21,7 +21,7 @@ class music_genreController {
             const music_genres = await music_genreService.getallmusic_genre();
             res.json(music_genres);
         } catch (error) {
-            if (error instanceof NotFoundError) {
+            if (error.name === 'appError' && error.statuscode === 404) {
                 res.status(404).json({ error: error.message });
             } else {
                 res.status(500).json({ error: error.message });
@@ -34,7 +34,7 @@ class music_genreController {
             const music_genre = await music_genreService.getmusic_genrebyid(req.params.id);
             res.json(music_genre);
         } catch (error) {
-            if (error instanceof NotFoundError) {
+            if (error.name === 'appError' && error.statuscode === 404) {
                 res.status(404).json({ error: error.message });
             } else {
                 res.status(500).json({ error: error.message });
@@ -47,9 +47,9 @@ class music_genreController {
             const updatedmusic_genre = await music_genreService.updatemusic_genre(req.params.id, req.body);
             res.json(updatedmusic_genre);
         } catch (error) {
-            if (error instanceof NotFoundError) {
+            if (error.name === 'appError' && error.statuscode === 404) {
                 res.status(404).json({ error: error.message });
-            } else if (error instanceof UnauthorizedError) {
+            } else if (error.name === 'appError' && error.statuscode === 401) {
                 res.status(401).json({ error: error.message });
             } else {
                 res.status(500).json({ error: error.message });
@@ -62,7 +62,7 @@ class music_genreController {
             const result = await music_genreService.deletemusic_genre(req.params.id);
             res.json(result);
         } catch (error) {
-            if (error instanceof NotFoundError) {
+            if (error.name === 'appError' && error.statuscode === 404) {
                 res.status(404).json({ error: error.message });
             } else {
                 res.status(500).json({ error: error.message });

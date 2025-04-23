@@ -1,6 +1,6 @@
  import express from "express";
 import userController from"../controllers/user.controller.js";
-import { authenticateToken,authorizeRoles } from "../auth.js"; 
+import { authenticateToken,authorizePermission } from "../auth.js"; 
 
  const router = express.Router();
  
@@ -9,7 +9,7 @@ import { authenticateToken,authorizeRoles } from "../auth.js";
  router.get("/", userController.getalluser);
  router.get("/:id", userController.getuserbyid);
  router.put("/:id", userController.updateuser);
- router.delete("/:id", authenticateToken, authorizeRoles("admin"), userController.deleteuser);
+ router.delete("/:id", authenticateToken, authorizePermission("delete_users"), userController.deleteuser);
 
  export default router;
  

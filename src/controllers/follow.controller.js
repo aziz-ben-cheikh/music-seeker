@@ -8,7 +8,7 @@ class followController {
             const follow = await followService.createfollow(req.body);
             res.status(201).json(follow);
         } catch (error) {
-            if (error instanceof UnauthorizedError) {
+            if (error.name === 'appError' && error.statuscode === 401) {
                 res.status(401).json({ error: error.message });
             } else {
                 res.status(400).json({ error: error.message });
@@ -21,7 +21,7 @@ class followController {
             const follows = await followService.getallfollow();
             res.json(follows);
         } catch (error) {
-            if (error instanceof NotFoundError) {
+            if (error.name === 'appError' && error.statuscode === 404) {
                 res.status(404).json({ error: error.message });
             } else {
                 res.status(500).json({ error: error.message });
@@ -34,7 +34,7 @@ class followController {
             const follow = await followService.getfollowbyid(req.params.id);
             res.json(follow);
         } catch (error) {
-            if (error instanceof NotFoundError) {
+            if (error.name === 'appError' && error.statuscode === 404) {
                 res.status(404).json({ error: error.message });
             } else {
                 res.status(500).json({ error: error.message });
@@ -47,9 +47,9 @@ class followController {
             const updatedfollow = await followService.updatefollow(req.params.id, req.body);
             res.json(updatedfollow);
         } catch (error) {
-            if (error instanceof NotFoundError) {
+            if (error.name === 'appError' && error.statuscode === 404) {
                 res.status(404).json({ error: error.message });
-            } else if (error instanceof UnauthorizedError) {
+            } else if (error.name === 'appError' && error.statuscode === 401) {
                 res.status(401).json({ error: error.message });
             } else {
                 res.status(500).json({ error: error.message });
@@ -62,7 +62,7 @@ class followController {
             const result = await followService.deletefollow(req.params.id);
             res.json(result);
         } catch (error) {
-            if (error instanceof NotFoundError) {
+            if (error.name === 'appError' && error.statuscode === 404) {
                 res.status(404).json({ error: error.message });
             } else {
                 res.status(500).json({ error: error.message });

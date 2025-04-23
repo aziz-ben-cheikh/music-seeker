@@ -8,7 +8,7 @@ class genreController {
             const genre = await genreService.creategenre(req.body);
             res.status(201).json(genre);
         } catch (error) {
-            if (error instanceof UnauthorizedError) {
+            if (error.name === 'appError' && error.statuscode === 401) {
                 res.status(401).json({ error: error.message });
             } else {
                 res.status(400).json({ error: error.message });
@@ -21,7 +21,7 @@ class genreController {
             const genres = await genreService.getallgenre();
             res.json(genres);
         } catch (error) {
-            if (error instanceof NotFoundError) {
+            if (error.name === 'appError' && error.statuscode === 404) {
                 res.status(404).json({ error: error.message });
             } else {
                 res.status(500).json({ error: error.message });
@@ -34,7 +34,7 @@ class genreController {
             const genre = await genreService.getgenrebyid(req.params.id);
             res.json(genre);
         } catch (error) {
-            if (error instanceof NotFoundError) {
+            if (error.name === 'appError' && error.statuscode === 404) {
                 res.status(404).json({ error: error.message });
             } else {
                 res.status(500).json({ error: error.message });
@@ -47,9 +47,9 @@ class genreController {
             const updatedgenre = await genreService.updategenre(req.params.id, req.body);
             res.json(updatedgenre);
         } catch (error) {
-            if (error instanceof NotFoundError) {
+            if (error.name === 'appError' && error.statuscode === 404) {
                 res.status(404).json({ error: error.message });
-            } else if (error instanceof UnauthorizedError) {
+            } else if (error.name === 'appError' && error.statuscode === 401) {
                 res.status(401).json({ error: error.message });
             } else {
                 res.status(500).json({ error: error.message });
@@ -62,7 +62,7 @@ class genreController {
             const result = await genreService.deletegenre(req.params.id);
             res.json(result);
         } catch (error) {
-            if (error instanceof NotFoundError) {
+            if (error.name === 'appError' && error.statuscode === 404) {
                 res.status(404).json({ error: error.message });
             } else {
                 res.status(500).json({ error: error.message });

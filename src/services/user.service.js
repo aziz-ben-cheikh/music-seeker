@@ -1,4 +1,5 @@
-import { NotFoundError, ForbiddenError, UnauthorizedError } from '../errors.js'; 
+import { NotFoundError, ForbiddenError, UnauthorizedError } from '../errors.js';
+import { allowedRoles } from '../roles.js';
 import userRepository from "../repositories/user.repository.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -10,6 +11,7 @@ class userService {
             const newUser = {
                 ...userData,
                 password_hash: hashedPassword,
+                roles: userData.roles || "user",
             };
             return await userRepository.create(newUser);
         } catch (error) {
