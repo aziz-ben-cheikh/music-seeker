@@ -42,28 +42,32 @@ class FollowRepository {
     }
 
     async findByid(id) {
-        const sql = 'SELECT * FROM follows WHERE id = ?';
+        const sql = 'SELECT * FROM follows WHERE follower_id = ?';
         const [rows] = await db.execute(sql, [id]);
         return rows[0] || null;
     }
 
     async update(id, followData) {
-        let follows = await this.readData();
-        const index = follows.findIndex(follow => follow.id === id);
-        if (index === -1) return null;
+        const fields = Object.keys(followData);
+        if (fields.length === 0) return null;
 
-        follows[index] = { ...follows[index], ...followData };
-        await this.writeData(follows);
-        return follows[index];
+        const setClause = fields.map(field => `${field} = ?`).join(', ');
+        const values = Object.values(followData);
+        const sql = `UPDATE follows SET ${setClause} WHERE follower_id = ?`;
+        values.push(id);
+
+        const [result] = await db.execute(sql, values);
+        if (result.affectedRows === 0) return null;
+
+        const [updatedUserRows] = await db.execute('SELECT * FROM follows WHERE follower_id = ?', [id]);
+        return updatedUserRows[0];
     }
 
     async delete(id) {
-        let follows = await this.readData();
-        const newFollows = follows.filter(follow => follow.id !== id);
-        if (newFollows.length === follows.length) return null;
+        const sql = 'DELETE FROM follows WHERE follower_id = ?';
+        const [result] = await db.execute(sql, [id]);
+        return result.affectedRows > 0;
 
-        await this.writeData(newFollows);
-        return true;
     }
 }
 

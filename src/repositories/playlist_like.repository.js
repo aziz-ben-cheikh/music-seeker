@@ -41,28 +41,32 @@ class playlist_likeRepository {
     }
 
     async findByid(id) {
-        const sql = 'SELECT * FROM playlist_likes WHERE id = ?';
+        const sql = 'SELECT * FROM playlist_likes WHERE user_id = ?';
         const [rows] = await db.execute(sql, [id]);
         return rows[0] || null;
     }
 
     async update(id, playlist_likeData) {
-        let playlist_likes = await this.readData();
-        const index = playlist_likes.findIndex(playlist_like => playlist_like.id === id);
-        if (index === -1) return null;
+        const fields = Object.keys(playlist_likeData);
+        if (fields.length === 0) return null;
 
-        playlist_likes[index] = { ...playlist_likes[index], ...playlist_likeData };
-        await this.writeData(playlist_likes);
-        return playlist_likes[index];
+        const setClause = fields.map(field => `${field} = ?`).join(', ');
+        const values = Object.values(playlist_likeData);
+        const sql = `UPDATE playlist_likes SET ${setClause} WHERE user_id = ?`;
+        values.push(id);
+
+        const [result] = await db.execute(sql, values);
+        if (result.affectedRows === 0) return null;
+
+        const [updatedUserRows] = await db.execute('SELECT * FROM playlist_likes WHERE user_id = ?', [id]);
+        return updatedUserRows[0];
     }
 
     async delete(id) {
-        let playlist_likes = await this.readData();
-        const newplaylist_likes = playlist_likes.filter(playlist_like => playlist_like.id !== id);
-        if (newplaylist_likes.length === playlist_likes.length) return null;
+        const sql = 'DELETE FROM playlist_likes WHERE user_id = ?';
+        const [result] = await db.execute(sql, [id]);
+        return result.affectedRows > 0;
 
-        await this.writeData(newplaylist_likes);
-        return true;
     }
 }
 

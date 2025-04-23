@@ -1,25 +1,21 @@
-class NotFoundError extends Error {
-    constructor(message) {
-        super(message);
-        this.name = 'NotFoundError';
-        this.statusCode = 404;
-    }
+
+export const errorbuilder =(statuscode, message)=>{
+    const error = new Error(message);
+    error.statuscode = statuscode;
+    error.name = 'appError';
+    return error;
 }
 
-class ForbiddenError extends Error {
-    constructor(message) {
-        super(message);
-        this.name = 'ForbiddenError';
-        this.statusCode = 403;
-    }
+export const NotFoundError = (message = 'resource not found')=>{
+   return errorbuilder(404,message)
 }
 
-class UnauthorizedError extends Error {
-    constructor(message) {
-        super(message);
-        this.name = 'UnauthorizedError';
-        this.statusCode = 401;
-    }
+export const ForbiddenError = (message = 'Forbidden')=>{
+   return errorbuilder(403,message)
 }
 
-export { NotFoundError, ForbiddenError, UnauthorizedError };
+export const UnauthorizedError = (message = 'Unauthorized')=>{
+  return  errorbuilder(401,message)
+}
+
+//error ideas ?

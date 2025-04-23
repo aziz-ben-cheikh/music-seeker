@@ -46,22 +46,26 @@ class genreRepository {
     }
 
     async update(id, genreData) {
-        let genres = await this.readData();
-        const index = genres.findIndex(genre => genre.id === id);
-        if (index === -1) return null;
+        const fields = Object.keys(genreData);
+        if (fields.length === 0) return null;
 
-        genres[index] = { ...genres[index], ...genreData };
-        await this.writeData(genres);
-        return genres[index];
+        const setClause = fields.map(field => `${field} = ?`).join(', ');
+        const values = Object.values(genreData);
+        const sql = `UPDATE genre SET ${setClause} WHERE id = ?`;
+        values.push(id);
+
+        const [result] = await db.execute(sql, values);
+        if (result.affectedRows === 0) return null;
+
+        const [updatedUserRows] = await db.execute('SELECT * FROM genre WHERE id = ?', [id]);
+        return updatedUserRows[0];
     }
 
     async delete(id) {
-        let genres = await this.readData();
-        const newgenres = genres.filter(genre => genre.id !== id);
-        if (newgenres.length === genres.length) return null;
+        const sql = 'DELETE FROM genre WHERE id = ?';
+        const [result] = await db.execute(sql, [id]);
+        return result.affectedRows > 0;
 
-        await this.writeData(newgenres);
-        return true;
     }
 }
 

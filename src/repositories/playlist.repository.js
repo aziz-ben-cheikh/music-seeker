@@ -47,22 +47,25 @@ class playlistRepository {
     }
 
     async update(id, playlistData) {
-        let playlists = await this.readData();
-        const index = playlists.findIndex(playlist => playlist.id === id);
-        if (index === -1) return null;
+        const fields = Object.keys(playlistData);
+        if (fields.length === 0) return null;
 
-        playlists[index] = { ...playlists[index], ...playlistData };
-        await this.writeData(playlists);
-        return playlists[index];
+        const setClause = fields.map(field => `${field} = ?`).join(', ');
+        const values = Object.values(playlistData);
+        const sql = `UPDATE playlists SET ${setClause} WHERE id = ?`;
+        values.push(id);
+
+        const [result] = await db.execute(sql, values);
+        if (result.affectedRows === 0) return null;
+
+        const [updatedUserRows] = await db.execute('SELECT * FROM playlists WHERE id = ?', [id]);
+        return updatedUserRows[0];
     }
 
     async delete(id) {
-        let playlists = await this.readData();
-        const newplaylists = playlists.filter(playlist => playlist.id !== id);
-        if (newplaylists.length === playlists.length) return null;
-
-        await this.writeData(newplaylists);
-        return true;
+        const sql = 'DELETE FROM playlists WHERE id = ?';
+        const [result] = await db.execute(sql, [id]);
+        return result.affectedRows > 0;
     }
 }
 

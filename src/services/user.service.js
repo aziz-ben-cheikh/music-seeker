@@ -1,16 +1,46 @@
-import { NotFoundError, ForbiddenError, UnauthorizedError } from '../errors.js'; 
+import { NotFoundError, ForbiddenError, UnauthorizedError } from '../errors.js';
+import { allowedRoles } from '../roles.js';
 import userRepository from "../repositories/user.repository.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 class userService {
     async createuser(userData) {
         try {
-            // Check for any validation or authentication logic here (if needed)
-            return await userRepository.create(userData);
+            const hashedPassword = await bcrypt.hash(userData.password, 10);
+            const newUser = {
+                ...userData,
+                password_hash: hashedPassword,
+                roles: userData.roles || "user",
+            };
+            return await userRepository.create(newUser);
         } catch (error) {
-            throw new Error('Error creating user');
+            throw new Error("error creating user");
         }
     }
 
+    async login(email, password) {
+        const user = await userRepository.findByEmail(email);
+        if (!user) {
+            throw new UnauthorizedError("Invalid email or password");
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+        if (!isPasswordValid) {
+            throw new UnauthorizedError("Invalid email or password");
+        }
+        
+        const JWT_SECRET='your_jwt_secret'
+
+        const token = jwt.sign(
+            { userId: user.id, email: user.email, roles:user.roles},
+            JWT_SECRET,
+            { expiresIn: "1h" }
+        );
+
+        return { token, user: { id: user.id, username: user.username, email: user.email,roles: user.roles } };
+    }
+    
     async getalluser() {
         const users = await userRepository.findAll();
         if (!users || users.length === 0) {
@@ -28,11 +58,6 @@ class userService {
     }
 
     async updateuser(id, userData) {
-        // Example of checking for unauthorized access (you can modify based on your authentication logic)
-        if (!userData.isAuthorized) {
-            throw new UnauthorizedError("You are not authorized to update this user.");
-        }
-
         const updatedUser = await userRepository.update(id, userData);
         if (!updatedUser) {
             throw new NotFoundError(`User with ID ${id} not found.`);

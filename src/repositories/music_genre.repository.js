@@ -42,28 +42,32 @@ class music_genreRepository {
     }
 
     async findByid(id) {
-        const sql = 'SELECT * FROM music_genre WHERE id = ?';
+        const sql = 'SELECT * FROM music_genre WHERE music_id = ?';
         const [rows] = await db.execute(sql, [id]);
         return rows[0] || null;
     }
 
     async update(id, music_genreData) {
-        let music_genres = await this.readData();
-        const index = music_genres.findIndex(music_genre => music_genre.id === id);
-        if (index === -1) return null;
+        const fields = Object.keys(music_genreData);
+        if (fields.length === 0) return null;
 
-        music_genres[index] = { ...music_genres[index], ...music_genreData };
-        await this.writeData(music_genres);
-        return music_genres[index];
+        const setClause = fields.map(field => `${field} = ?`).join(', ');
+        const values = Object.values(music_genreData);
+        const sql = `UPDATE music_genre SET ${setClause} WHERE music_id = ?`;
+        values.push(id);
+
+        const [result] = await db.execute(sql, values);
+        if (result.affectedRows === 0) return null;
+
+        const [updatedUserRows] = await db.execute('SELECT * FROM music_genre WHERE music_id = ?', [id]);
+        return updatedUserRows[0];
     }
 
     async delete(id) {
-        let music_genres = await this.readData();
-        const newmusic_genres = music_genres.filter(music_genre => music_genre.id !== id);
-        if (newmusic_genres.length === music_genres.length) return null;
+        const sql = 'DELETE FROM music_genre WHERE music_id = ?';
+        const [result] = await db.execute(sql, [id]);
+        return result.affectedRows > 0;
 
-        await this.writeData(newmusic_genres);
-        return true;
     }
 }
 

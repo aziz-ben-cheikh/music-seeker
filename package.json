@@ -2,9 +2,11 @@
   "type": "module",
   "dependencies": {
     "app": "^0.1.0",
+    "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "fs-extra": "^11.3.0",
+    "jsonwebtoken": "^9.0.2",
     "my": "^0.3.3",
     "mysql2": "^3.14.0",
     "sqlite3": "^5.1.7"

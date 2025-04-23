@@ -8,7 +8,7 @@ class musicController {
             const music = await musicService.createmusic(req.body);
             res.status(201).json(music);
         } catch (error) {
-            if (error instanceof UnauthorizedError) {
+            if (error.name === 'appError' && error.statuscode === 401) {
                 res.status(401).json({ error: error.message });
             } else {
                 res.status(400).json({ error: error.message });
@@ -21,7 +21,7 @@ class musicController {
             const musics = await musicService.getallmusic();
             res.json(musics);
         } catch (error) {
-            if (error instanceof NotFoundError) {
+            if (error.name === 'appError' && error.statuscode === 404) {
                 res.status(404).json({ error: error.message });
             } else {
                 res.status(500).json({ error: error.message });
@@ -34,7 +34,7 @@ class musicController {
             const music = await musicService.getmusicbyid(req.params.id);
             res.json(music);
         } catch (error) {
-            if (error instanceof NotFoundError) {
+            if (error.name === 'appError' && error.statuscode === 404) {
                 res.status(404).json({ error: error.message });
             } else {
                 res.status(500).json({ error: error.message });
@@ -47,9 +47,9 @@ class musicController {
             const updatedmusic = await musicService.updatemusic(req.params.id, req.body);
             res.json(updatedmusic);
         } catch (error) {
-            if (error instanceof NotFoundError) {
+            if (error.name === 'appError' && error.statuscode === 404) {
                 res.status(404).json({ error: error.message });
-            } else if (error instanceof UnauthorizedError) {
+            } else if (error.name === 'appError' && error.statuscode === 401) {
                 res.status(401).json({ error: error.message });
             } else {
                 res.status(500).json({ error: error.message });
@@ -62,7 +62,7 @@ class musicController {
             const result = await musicService.deletemusic(req.params.id);
             res.json(result);
         } catch (error) {
-            if (error instanceof NotFoundError) {
+            if (error.name === 'appError' && error.statuscode === 404) {
                 res.status(404).json({ error: error.message });
             } else {
                 res.status(500).json({ error: error.message });
