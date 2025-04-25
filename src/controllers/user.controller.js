@@ -1,5 +1,8 @@
 import userService from "../services/user.service.js";
+import jwt from "jsonwebtoken";
 import { NotFoundError, ForbiddenError, UnauthorizedError } from "../errors.js";
+
+const JWT_SECRET = "your_jwt_secret";
 
 class userController {
   async login(req, res) {
@@ -13,6 +16,34 @@ class userController {
         res.status(401).json({ error: error.message });
       } else {
         res.status(500).json({ error: "login failed" });
+      }
+    }
+  }
+
+  async refreshAccessToken(req, res, next) {
+    try {
+      const { refreshToken } = req.body;
+  
+      if (!refreshToken) {
+        throw UnauthorizedError("Refresh token required");
+      }
+  
+      const payload = jwt.verify(refreshToken, JWT_SECRET);
+  
+      const newAccessToken = jwt.sign(
+        { userId: payload.userId },
+        JWT_SECRET,
+        { expiresIn: "15m" }
+      );
+  
+      res.json({ accessToken: newAccessToken });
+    } catch (error) {
+      if (error.name === "TokenExpiredError" || error.name === "JsonWebTokenError") {
+        next(ForbiddenError("Invalid or expired refresh token"));
+      } else if (error.name === "appError") {
+        next(error);
+      } else {
+        next(new Error("Something went wrong"));
       }
     }
   }

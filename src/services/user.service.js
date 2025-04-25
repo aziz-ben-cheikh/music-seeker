@@ -32,14 +32,21 @@ class userService {
 
     const JWT_SECRET = "your_jwt_secret";
 
-    const token = jwt.sign(
+    const accessToken = jwt.sign(
       { userId: user.id, email: user.email, roles: user.roles },
       JWT_SECRET,
       { expiresIn: "1h" }
     );
 
+    const refreshToken = jwt.sign(
+      { userId: user.id },
+      JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
     return {
-      token,
+      accessToken,
+      refreshToken,
       user: {
         id: user.id,
         username: user.username,
