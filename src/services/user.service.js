@@ -4,6 +4,11 @@ import userRepository from "../repositories/user.repository.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+
+const JWT_SECRET = process.env.JWT_SECRET;
+const ACCESS_EXPIRES = process.env.ACCESS_TOKEN_EXPIRES || "15m";
+const REFRESH_EXPIRES = process.env.REFRESH_TOKEN_EXPIRES || "7d";
+
 class userService {
   async createuser(userData) {
     try {
@@ -30,18 +35,16 @@ class userService {
       throw new UnauthorizedError("Invalid email or password");
     }
 
-    const JWT_SECRET = "your_jwt_secret";
-
     const accessToken = jwt.sign(
       { userId: user.id, email: user.email, roles: user.roles },
       JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: ACCESS_EXPIRES }
     );
 
     const refreshToken = jwt.sign(
       { userId: user.id },
       JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: REFRESH_EXPIRES }
     );
 
     return {
@@ -87,8 +90,6 @@ class userService {
     }
     return { message: "User deleted successfully." };
   }
-
-  // You can add additional methods like login, etc., with 401/403 error handling based on the case
 }
 
 export default new userService();

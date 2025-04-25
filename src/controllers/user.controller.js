@@ -2,7 +2,10 @@ import userService from "../services/user.service.js";
 import jwt from "jsonwebtoken";
 import { NotFoundError, ForbiddenError, UnauthorizedError } from "../errors.js";
 
-const JWT_SECRET = "your_jwt_secret";
+
+const JWT_SECRET = process.env.JWT_SECRET;
+const ACCESS_EXPIRES = process.env.ACCESS_TOKEN_EXPIRES || "15m";
+
 
 class userController {
   async login(req, res) {
@@ -33,7 +36,7 @@ class userController {
       const newAccessToken = jwt.sign(
         { userId: payload.userId },
         JWT_SECRET,
-        { expiresIn: "15m" }
+        { expiresIn: ACCESS_EXPIRES }
       );
   
       res.json({ accessToken: newAccessToken });
