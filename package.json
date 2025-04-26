@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-"build": "babel src --out-dir dist",
+    "build": "babel src --out-dir dist",
     "start": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -20,9 +20,7 @@
     "express": "^5.1.0",
     "fs-extra": "^11.3.0",
     "jsonwebtoken": "^9.0.2",
-    "mysql2": "^3.14.0",
-    "sqlite": "^5.1.1",
-    "sqlite3": "^5.1.7"
+    "mysql2": "^3.14.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.27.0",
