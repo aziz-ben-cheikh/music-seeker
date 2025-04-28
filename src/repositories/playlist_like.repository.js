@@ -1,7 +1,7 @@
 import fs from "fs-extra/esm";
 import path from "path";
 import { fileURLToPath } from "url";
-import db from "../../DataBase.js";
+import db from "../../database.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
